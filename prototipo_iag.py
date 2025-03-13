@@ -21,10 +21,7 @@ import pytesseract
 from youtube_transcript_api import YouTubeTranscriptApi
 import spacy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
 import spacy
-
-nlp = spacy.load("es_core_news_sm")
 
 # Descargar recursos de NLTK
 nltk.download('punkt')

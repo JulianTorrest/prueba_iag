@@ -109,7 +109,7 @@ def leer_web_idioma(url):
 def leer_imagen(archivo):
     try:
         imagen = Image.open(archivo)
-        texto = pytesseract.image_to_string(imagen, lang="spa")  # Cambia el idioma si es necesario
+        texto = pytesseract.image_to_string(imagen, lang="spanish")  # Cambia el idioma si es necesario
         return texto
     except Exception as e:
         return f"Error al leer imagen: {e}"
@@ -117,7 +117,7 @@ def leer_imagen(archivo):
 def extraer_transcripcion_youtube(url):
     try:
         video_id = url.split("v=")[1]
-        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['es'])  # Cambia el idioma si es necesario
+        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['spanish'])  # Cambia el idioma si es necesario
         texto = " ".join([entry['text'] for entry in transcript])
         return texto
     except Exception as e:
@@ -314,14 +314,14 @@ def grabar_voz():
         st.write("Habla ahora...")
         audio = recognizer.listen(source)
     try:
-        texto = recognizer.recognize_google(audio, language="es-ES")  # Cambia el idioma si es necesario
+        texto = recognizer.recognize_google(audio, language="spanish")  # Cambia el idioma si es necesario
         return texto
     except sr.UnknownValueError:
         return "No se pudo entender el audio."
     except sr.RequestError:
         return "Error en la solicitud de reconocimiento de voz."
 
-def texto_a_voz(texto, idioma="es"):
+def texto_a_voz(texto, idioma="spanish"):
     tts = gTTS(texto, lang=idioma)
     tts.save("resumen_voz.mp3")
     audio_file = open("resumen_voz.mp3", 'rb')
@@ -333,15 +333,15 @@ def texto_a_voz(texto, idioma="es"):
 st.title("IA de Búsqueda de Documentos Avanzada")
 
 st.sidebar.title("Opciones Globales")
-idioma_interfaz = st.sidebar.selectbox("Idioma de la interfaz:", ["Español", "Inglés"])
+idioma_interfaz = st.sidebar.selectbox("Idioma de la interfaz:", ["spanish", "english"])
 tema = st.sidebar.selectbox("Tema:", ["Claro", "Oscuro"])
 
 with st.expander("Búsqueda y Resumen de Documentos"):
     consulta = st.text_input("Ingresa tu consulta:")
     archivo = st.file_uploader("Carga un archivo (PDF, Word, CSV, imagen):")
     url_youtube = st.text_input("Ingresa un enlace de YouTube:")
-    idioma_archivo = st.selectbox("Idioma del archivo:", ["es", "en", "fr", "de"])
-    idioma_resumen = st.selectbox("Idioma del resumen:", ["es", "en", "fr", "de"])
+    idioma_archivo = st.selectbox("Idioma del archivo:", ["spanish", "english"])
+    idioma_resumen = st.selectbox("Idioma del resumen:", ["spanish", "english"])
     if st.button("Buscar"):
         # Lógica de búsqueda y resumen
         if archivo is not None:

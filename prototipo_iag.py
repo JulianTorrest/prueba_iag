@@ -29,7 +29,7 @@ nltk.download('wordnet')
 nltk.download('stopwords')
 
 import nltk
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 
 try:
     nltk.data.find('tokenizers/punkt')
@@ -39,6 +39,13 @@ except LookupError:
     nltk.download('punkt')
     print("Recurso Punkt descargado.")
 
+try:
+    nltk.data.find('tokenizers/punkt_tab/spanish')
+    print("Recurso Punkt_tab para español descargado correctamente.")
+except LookupError:
+    print("Descargando recurso Punkt_tab para español...")
+    nltk.download('punkt_tab')
+    print("Recurso Punkt_tab para español descargado.")
 
 # Funciones de Lectura de Archivos
 def leer_pdf(ruta_archivo):

@@ -480,7 +480,7 @@ with st.expander("Búsqueda y Resumen de Documentos"):
 
 with st.expander("Resumen de Múltiples Fuentes"):
     fuentes = st.text_area("URLs o rutas de archivos (separadas por comas):")
-    idioma_resumen_multiple = st.selectbox("Idioma del resumen:", ["spanish", "english"])
+    idioma_resumen_multiple = st.selectbox("Idioma del resumen:", ["spanish", "english"], key="idioma_resumen_multiple")
     if st.button("Generar Resumen Múltiple"):
         if fuentes:
             resumen_multiple = resumir_multiples_fuentes(fuentes, idioma_resumen_multiple)
@@ -488,7 +488,7 @@ with st.expander("Resumen de Múltiples Fuentes"):
             st.write(resumen_multiple)
         else:
             st.write("Ingresa URLs o rutas de archivos.")
-            
+
 with st.expander("Consulta en Página Web"):
     url_consulta = st.text_input("URL para consulta específica:")
     if st.button("Consultar Página Web"):

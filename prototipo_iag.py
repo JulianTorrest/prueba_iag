@@ -31,6 +31,15 @@ nltk.download('stopwords')
 import nltk
 from nltk.tokenize import sent_tokenize
 
+try:
+    nltk.data.find('tokenizers/punkt')
+    print("Recurso Punkt descargado correctamente.")
+except LookupError:
+    print("Descargando recurso Punkt...")
+    nltk.download('punkt')
+    print("Recurso Punkt descargado.")
+
+
 # Funciones de Lectura de Archivos
 def leer_pdf(ruta_archivo):
     try:

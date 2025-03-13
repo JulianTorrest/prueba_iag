@@ -171,7 +171,7 @@ def resaltar_informacion(texto):
 palabras_positivas = ["feliz", "bien", "excelente", "amor", "alegría"]  # Ejemplo
 palabras_negativas = ["triste", "mal", "pésimo", "odio", "dolor"]  # Ejemplo
 
-def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idioma="es"):
+def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idioma="spanish"):
     tokens = preprocesar_texto(texto)
     stop_words = set(stopwords.words(idioma))
     palabras_filtradas = [token for token in tokens if token in palabras_sentimiento and token not in stop_words]

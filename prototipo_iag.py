@@ -392,18 +392,25 @@ with st.expander("Búsqueda y Resumen de Documentos"):
         if st.session_state.get('texto') and st.session_state.get('texto').strip():
             with st.spinner("Procesando..."):
                 resumen = resumir_texto(st.session_state.get('texto'))
-                coincidencias = buscar_coincidencia_parcial(st.session_state.get('texto'), consulta)
-                frecuencia = contar_frecuencia_palabras(st.session_state.get('texto'), consulta)
                 tab1, tab2, tab3 = st.tabs(["Resumen", "Coincidencias", "Frecuencia"])
                 with tab1:
                     st.markdown("### Resumen:")
                     st.write(resumen)
-                with tab2:
-                    st.markdown("### Coincidencias:")
-                    st.write(coincidencias)
-                with tab3:
-                    st.markdown("### Frecuencia:")
-                    st.write(frecuencia)
+
+                if consulta:  # Verifica si hay una consulta
+                    coincidencias = buscar_coincidencia_parcial(st.session_state.get('texto'), consulta)
+                    frecuencia = contar_frecuencia_palabras(st.session_state.get('texto'), consulta)
+                    with tab2:
+                        st.markdown("### Coincidencias:")
+                        st.write(coincidencias)
+                    with tab3:
+                        st.markdown("### Frecuencia:")
+                        st.write(frecuencia)
+                else:
+                    with tab2:
+                        st.write("ingrese una consulta")
+                    with tab3:
+                        st.write("ingrese una consulta")
         else:
             st.write("No se ha proporcionado texto para buscar.")
 

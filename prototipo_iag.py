@@ -479,14 +479,15 @@ with st.expander("Búsqueda y Resumen de Documentos"):
             st.write("No se ha proporcionado texto para buscar.")
 
 with st.expander("Resumen de Múltiples Fuentes"):
-    fuentes_multiples = st.text_area("URLs o rutas de archivos (separadas por comas):")
-    if st.button("Resumen Múltiple"):
-        fuentes = [f.strip() for f in fuentes_multiples.split(",")]
-        resumen, citas = resumir_multiples_fuentes(fuentes)
-        st.markdown("### Resumen:")
-        st.write(resumen)
-        st.markdown("### Citas:")
-        st.write(citas)
+    fuentes = st.text_area("URLs o rutas de archivos (separadas por comas):")
+    idioma_resumen_multiple = st.selectbox("Idioma del resumen:", ["spanish", "english"])
+    if st.button("Generar Resumen Múltiple"):
+        if fuentes:
+            resumen_multiple = resumir_multiples_fuentes(fuentes, idioma_resumen_multiple)
+            st.markdown("### Resumen de Múltiples Fuentes:")
+            st.write(resumen_multiple)
+        else:
+            st.write("Ingresa URLs o rutas de archivos.")
 
 with st.expander("Consulta en Página Web"):
     url_consulta = st.text_input("URL para consulta específica:")

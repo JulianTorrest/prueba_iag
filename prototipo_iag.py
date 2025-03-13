@@ -165,16 +165,38 @@ palabras_positivas = ["feliz", "bien", "excelente", "amor", "alegría"]  # Ejemp
 palabras_negativas = ["triste", "mal", "pésimo", "odio", "dolor"]  # Ejemplo
 
 def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idioma="spanish"):
-    tokens = preprocesar_texto(texto)
-    stop_words = set(stopwords.words(idioma))
-    palabras_filtradas = [token for token in tokens if token in palabras_sentimiento and token not in stop_words]
-    texto_limpio = " ".join(palabras_filtradas)
-    if texto_limpio:
-        wordcloud = WordCloud().generate(texto_limpio)
-        plt.imshow(wordcloud, interpolation='bilinear')
-        plt.axis("off")
-        plt.title(titulo)
-        st.pyplot(plt)
+    """
+    Genera una nube de palabras basada en el sentimiento del texto.
+
+    Args:
+        texto (str): El texto para generar la nube de palabras.
+        palabras_sentimiento (list): Lista de palabras relacionadas con el sentimiento (positivo o negativo).
+        titulo (str): Título para la nube de palabras.
+        idioma (str, optional): Idioma de las stopwords. Defaults to "spanish".
+    """
+    try:
+        # Preprocesar el texto
+        tokens = word_tokenize(texto.lower())
+        stop_words = set(stopwords.words(idioma))
+        palabras_filtradas = [token for token in tokens if token in palabras_sentimiento and token.isalpha() and token not in stop_words]
+        texto_limpio = " ".join(palabras_filtradas)
+
+        # Imprimir información de depuración
+        print(f"Texto limpio para {titulo}: {texto_limpio}")
+
+        # Generar la nube de palabras si hay palabras filtradas
+        if texto_limpio:
+            wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_limpio)
+            plt.figure(figsize=(10, 5))
+            plt.imshow(wordcloud, interpolation='bilinear')
+            plt.axis('off')
+            plt.title(titulo)
+            st.pyplot(plt)
+        else:
+            st.warning(f"No se encontraron palabras para generar la nube de palabras {titulo}.")
+
+    except Exception as e:
+        st.error(f"Error al generar la nube de palabras {titulo}: {e}")
 
 # Funciones de Búsqueda Mejoradas
 def buscar_coincidencia_parcial(texto, consulta):

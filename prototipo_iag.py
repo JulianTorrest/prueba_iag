@@ -224,12 +224,22 @@ def resumir_multiples_fuentes(fuentes, num_oraciones=3):
 
 # Consultas en Páginas Web Específicas
 def consultar_pagina_web(url, consulta):
-    texto = leer_web(url)
-    if texto:
-        resultados = buscar_coincidencia_parcial(texto, consulta)
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Lanza una excepción para códigos de error HTTP
+        soup = BeautifulSoup(response.content, 'html.parser')
+        texto_pagina = soup.get_text()
+        print(f"Texto extraído de la página web: {texto_pagina}")  # Imprime el texto extraído
+        resultados = [linea for linea in texto_pagina.splitlines() if consulta.lower() in linea.lower()]
+        print(f"Resultados de la búsqueda: {resultados}")  # Imprime los resultados
         return resultados
-    else:
-        return "No se pudo acceder a la página web."
+    except requests.exceptions.RequestException as e:
+        print(f"Error al acceder a la página web: {e}")
+        return []
+    except Exception as e:
+        print(f"Error en consultar_pagina_web: {e}")
+        return []
+
 
 # Generación de Gráficos y Nubes de Palabras
 def generar_grafico_frecuencia(texto):

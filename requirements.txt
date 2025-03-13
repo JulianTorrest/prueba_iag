@@ -17,3 +17,4 @@ vaderSentiment
 spacy
 seaborn
 Pillow
+sumy

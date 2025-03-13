@@ -28,6 +28,9 @@ nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
 
+import nltk
+from nltk.tokenize import sent_tokenize
+
 # Funciones de Lectura de Archivos
 def leer_pdf(ruta_archivo):
     try:

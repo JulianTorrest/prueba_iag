@@ -322,20 +322,20 @@ with st.expander("Búsqueda y Resumen de Documentos"):
         # Lógica de búsqueda y resumen
         if archivo is not None:
             if archivo.name.endswith(".pdf"):
-                texto = leer_pdf(archivo)
+                st.session_state['texto'] = leer_pdf(archivo)
             elif archivo.name.endswith(".docx"):
-                texto = leer_word(archivo)
+                st.session_state['texto'] = leer_word(archivo)
             elif archivo.name.endswith(".csv"):
-                texto = leer_csv(archivo)
+                st.session_state['texto'] = leer_csv(archivo)
             elif archivo.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                texto = leer_imagen(archivo)
+                st.session_state['texto'] = leer_imagen(archivo)
             else:
                 st.write("Formato de archivo no compatible.")
-                texto = ""
+                st.session_state['texto'] = ""
         elif url_youtube:
-            texto = extraer_transcripcion_youtube(url_youtube)
+            st.session_state['texto'] = extraer_transcripcion_youtube(url_youtube)
         else:
-            texto = ""
+            st.session_state['texto'] = ""
 
         if texto and texto.strip():
             with st.spinner("Procesando..."):

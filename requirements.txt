@@ -1,0 +1,16 @@
+PyPDF2
+python-docx
+openpyxl
+pandas
+beautifulsoup4
+nltk
+streamlit
+transformers
+spacy
+vaderSentiment
+wordcloud
+seaborn
+youtube-transcript-api
+langdetect
+Pillow
+pytesseract

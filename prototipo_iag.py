@@ -23,6 +23,12 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import spacy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import spacy
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
+
 
 # Descargar recursos de NLTK
 nltk.download('punkt')
@@ -250,6 +256,7 @@ def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idiom
 def resumir_texto(texto, limite_palabras=1000, idioma="spanish"):
     """
     Genera un resumen de un texto con un límite de palabras.
+
     Args:
         texto (str): El texto a resumir.
         limite_palabras (int, optional): Número aproximado de palabras para el resumen. Defaults to 500.
@@ -259,29 +266,38 @@ def resumir_texto(texto, limite_palabras=1000, idioma="spanish"):
         str: Resumen del texto.
     """
     try:
+        if not texto or len(texto.split()) < 50:  # Verifica si el texto está vacío o es demasiado corto
+            return "El texto proporcionado es demasiado corto para generar un resumen."
+
         parser = PlaintextParser.from_string(texto, Tokenizer(idioma))
         stemmer = Stemmer(idioma)
         summarizer = LsaSummarizer(stemmer)
         summarizer.stop_words = get_stop_words(idioma)
+
         sentences = summarizer(parser.document, sentences_count=10) # Ajusta sentences_count según la longitud del texto
+
         resumen_completo = " ".join([str(sentence) for sentence in sentences])
         palabras_resumen = resumen_completo.split()
+
         if len(palabras_resumen) > limite_palabras:
             resumen_final = " ".join(palabras_resumen[:limite_palabras])
         else:
             resumen_final = resumen_completo
+
         return resumen_final
+
     except Exception as e:
         print(f"Error en resumir_texto: {e}")
-        return "No se pudo generar el resumen."
+        return f"No se pudo generar el resumen. Error: {e}"
+
         
 # Resúmenes de Múltiples Fuentes con Citas
 def resumir_multiples_fuentes(texto_combinado, idioma_resumen="spanish", limite_palabras=500):
-    if isinstance(texto_combinado, str): #verifica que la variable sea de tipo string
-        resumen = resumir_texto(texto_combinado, idioma=idioma_resumen, limite_palabras=limite_palabras)
+    if isinstance(texto_combinado, str) and len(texto_combinado) > 100:  # Verifica que el texto tenga al menos 100 caracteres
+        resumen = resumir_texto(texto_combinado, limite_palabras=limite_palabras, idioma=idioma_resumen)
         return resumen
     else:
-        return "No se ha proporcionado texto válido para resumir."
+        return "No se ha proporcionado texto válido o suficiente para resumir."
         
 # Consultas en Páginas Web Específicas
 def consultar_pagina_web(url, consulta):

@@ -373,13 +373,12 @@ with st.expander("Consulta en Página Web"):
         st.write(resultados)
 
 with st.expander("Resumen por Texto Escrito"):
-    texto_escrito = st.text_area("Escribe tu texto para resumir:")
-    if st.button("Resumir Texto Escrito"):
-        if texto_escrito:
-            resumen = resumir_texto(texto_escrito)
-            st.markdown("### Resumen del texto escrito:")
-            st.write(resumen)
-            st.markdown(descargar_resumen(resumen, "resumen_escrito.txt"), unsafe_allow_html=True)
+    if st.session_state.get('texto'):  # Usa el texto cargado del archivo
+        resumen = resumir_texto(st.session_state.get('texto'))
+        st.markdown("### Resumen del texto del archivo:")
+        st.write(resumen)
+        st.markdown(descargar_resumen(resumen, "resumen_archivo.txt"), unsafe_allow_html=True)
+    else:
 
 with st.expander("Resumen por Voz"):
     if st.button("Grabar Voz y Resumir"):

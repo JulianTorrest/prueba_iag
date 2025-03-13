@@ -261,20 +261,11 @@ def resumir_texto(texto, num_oraciones=3):
 
 # Resúmenes de Múltiples Fuentes con Citas
 def resumir_multiples_fuentes(texto_combinado, idioma_resumen="spanish", limite_palabras=500):
-    """
-    Genera un resumen de aproximadamente 500 palabras del texto combinado.
-    Args:
-        texto_combinado (str): El texto combinado de múltiples fuentes.
-        idioma_resumen (str, optional): Idioma del resumen. Defaults to "spanish".
-        limite_palabras (int, optional): Número aproximado de palabras para el resumen. Defaults to 500.
-    Returns:
-        str: Resumen combinado de las fuentes.
-    """
-    if texto_combinado:
+    if isinstance(texto_combinado, str): #verifica que la variable sea de tipo string
         resumen = resumir_texto(texto_combinado, idioma=idioma_resumen, limite_palabras=limite_palabras)
         return resumen
     else:
-        return "No se ha proporcionado texto para resumir."
+        return "No se ha proporcionado texto válido para resumir."
         
 # Consultas en Páginas Web Específicas
 def consultar_pagina_web(url, consulta):
@@ -460,9 +451,13 @@ with st.expander("Resumen de Múltiples Fuentes"):
     idioma_resumen_multiple = st.selectbox("Idioma del resumen:", ["spanish", "english"], key="idioma_resumen_multiple")
     if st.button("Generar Resumen Múltiple"):
         if st.session_state.get('texto') and st.session_state.get('texto').strip():
-            resumen_multiple = resumir_multiples_fuentes(st.session_state.get('texto'), idioma_resumen_multiple)
-            st.markdown("### Resumen de Múltiples Fuentes:")
-            st.write(resumen_multiple)
+            texto_combinado = st.session_state.get('texto')
+            if isinstance(texto_combinado, str): #verifica que la variable sea de tipo string
+                resumen_multiple = resumir_multiples_fuentes(texto_combinado, idioma_resumen_multiple)
+                st.markdown("### Resumen de Múltiples Fuentes:")
+                st.write(resumen_multiple)
+            else:
+                st.write("El texto cargado no es válido.")
         else:
             st.write("No se han cargado documentos o URLs para resumir.")
 

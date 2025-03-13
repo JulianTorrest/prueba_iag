@@ -260,43 +260,21 @@ def resumir_texto(texto, num_oraciones=3):
 
 
 # Resúmenes de Múltiples Fuentes con Citas
-def resumir_multiples_fuentes(fuentes, idioma_resumen="spanish", limite_palabras=500):
+def resumir_multiples_fuentes(texto_combinado, idioma_resumen="spanish", limite_palabras=500):
     """
-    Genera un resumen de aproximadamente 500 palabras de múltiples fuentes (archivos y URLs).
+    Genera un resumen de aproximadamente 500 palabras del texto combinado.
     Args:
-        fuentes (str): URLs o rutas de archivos separadas por comas.
+        texto_combinado (str): El texto combinado de múltiples fuentes.
         idioma_resumen (str, optional): Idioma del resumen. Defaults to "spanish".
         limite_palabras (int, optional): Número aproximado de palabras para el resumen. Defaults to 500.
     Returns:
         str: Resumen combinado de las fuentes.
     """
-    textos_combinados = ""
-    fuentes = [f.strip() for f in fuentes.split(",")]  # Separar y limpiar las fuentes
-    for fuente in fuentes:
-        try:
-            if fuente.startswith("http://") or fuente.startswith("https://"):
-                if "youtube.com" in fuente or "youtu.be" in fuente:
-                    texto_fuente = extraer_transcripcion_youtube(fuente)
-                else:
-                    texto_fuente = leer_web(fuente)
-            elif fuente.endswith(".pdf"):
-                texto_fuente = leer_pdf(fuente)
-            elif fuente.endswith(".docx"):
-                texto_fuente = leer_word(fuente)
-            elif fuente.endswith(".csv"):
-                texto_fuente = leer_csv(fuente)
-            else:
-                st.warning(f"Formato no compatible o URL inválida: {fuente}")
-                continue
-            if texto_fuente:
-                textos_combinados += texto_fuente + "\n\n"
-        except Exception as e:
-            st.error(f"Error al procesar {fuente}: {e}")
-    if textos_combinados:
-        resumen = resumir_texto(textos_combinados, idioma=idioma_resumen, limite_palabras=limite_palabras)
+    if texto_combinado:
+        resumen = resumir_texto(texto_combinado, idioma=idioma_resumen, limite_palabras=limite_palabras)
         return resumen
     else:
-        return "No se pudo extraer texto de las fuentes proporcionadas."
+        return "No se ha proporcionado texto para resumir."
         
 # Consultas en Páginas Web Específicas
 def consultar_pagina_web(url, consulta):
@@ -479,15 +457,14 @@ with st.expander("Búsqueda y Resumen de Documentos"):
             st.write("No se ha proporcionado texto para buscar.")
 
 with st.expander("Resumen de Múltiples Fuentes"):
-    fuentes = st.text_area("URLs o rutas de archivos (separadas por comas):")
     idioma_resumen_multiple = st.selectbox("Idioma del resumen:", ["spanish", "english"], key="idioma_resumen_multiple")
     if st.button("Generar Resumen Múltiple"):
-        if fuentes:
-            resumen_multiple = resumir_multiples_fuentes(fuentes, idioma_resumen_multiple)
+        if st.session_state.get('texto') and st.session_state.get('texto').strip():
+            resumen_multiple = resumir_multiples_fuentes(st.session_state.get('texto'), idioma_resumen_multiple)
             st.markdown("### Resumen de Múltiples Fuentes:")
             st.write(resumen_multiple)
         else:
-            st.write("Ingresa URLs o rutas de archivos.")
+            st.write("No se han cargado documentos o URLs para resumir.")
 
 with st.expander("Consulta en Página Web"):
     url_consulta = st.text_input("URL para consulta específica:")

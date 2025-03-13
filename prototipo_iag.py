@@ -110,11 +110,14 @@ def extraer_transcripcion_youtube(url):
 # Funciones de Preprocesamiento de Texto
 def preprocesar_texto(texto):
     try:
-        tokens = word_tokenize(texto.lower(), language='spanish')  # Agrega language='spanish'
+        tokens = word_tokenize(texto.lower(), language='spanish')
+        print(f"Tokens después de word_tokenize: {tokens}")
         lemmatizer = WordNetLemmatizer()
         tokens = [lemmatizer.lemmatize(token) for token in tokens if token.isalnum()]
-        stop_words = set(stopwords.words('spanish'))  # Cambia a 'english' si es necesario
+        print(f"Tokens después de lematización: {tokens}")
+        stop_words = set(stopwords.words('spanish'))
         tokens = [token for token in tokens if token not in stop_words]
+        print(f"Tokens después de stopwords: {tokens}")
         return tokens
     except Exception as e:
         print(f"Error en preprocesar_texto: {e}")

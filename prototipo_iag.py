@@ -331,7 +331,7 @@ with st.expander("Búsqueda y Resumen de Documentos"):
         else:
             texto = ""
 
-        if texto:
+        if texto and texto.strip():
             with st.spinner("Procesando..."):
                 resumen = resumir_texto(texto)
                 coincidencias = buscar_coincidencia_parcial(texto, consulta)

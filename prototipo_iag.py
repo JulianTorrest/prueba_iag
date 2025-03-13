@@ -337,21 +337,21 @@ with st.expander("Búsqueda y Resumen de Documentos"):
         else:
             st.session_state['texto'] = ""
 
-        if texto and texto.strip():
+        if st.session_state.get('texto') and st.session_state.get('texto').strip():
             with st.spinner("Procesando..."):
-                resumen = resumir_texto(texto)
-                coincidencias = buscar_coincidencia_parcial(texto, consulta)
-                frecuencia = contar_frecuencia_palabras(texto, consulta)
-            tab1, tab2, tab3 = st.tabs(["Resumen", "Coincidencias", "Frecuencia"])
-            with tab1:
-                st.markdown("### Resumen:")
-                st.write(resumen)
-            with tab2:
-                st.markdown("### Coincidencias:")
-                st.write(coincidencias)
-            with tab3:
-                st.markdown("### Frecuencia:")
-                st.write(frecuencia)
+                resumen = resumir_texto(st.session_state.get('texto'))
+                coincidencias = buscar_coincidencia_parcial(st.session_state.get('texto'), consulta)
+                frecuencia = contar_frecuencia_palabras(st.session_state.get('texto'), consulta)
+                tab1, tab2, tab3 = st.tabs(["Resumen", "Coincidencias", "Frecuencia"])
+                with tab1:
+                    st.markdown("### Resumen:")
+                    st.write(resumen)
+                with tab2:
+                    st.markdown("### Coincidencias:")
+                    st.write(coincidencias)
+                with tab3:
+                    st.markdown("### Frecuencia:")
+                    st.write(frecuencia)
         else:
             st.write("No se ha proporcionado texto para buscar.")
 
@@ -379,6 +379,7 @@ with st.expander("Resumen por Texto Escrito"):
         st.write(resumen)
         st.markdown(descargar_resumen(resumen, "resumen_archivo.txt"), unsafe_allow_html=True)
     else:
+        st.write("No hay texto disponible para resumir. Carga un archivo o ingresa texto en la sección 'Búsqueda y Resumen de Documentos'.")
 
 with st.expander("Resumen por Voz"):
     if st.button("Grabar Voz y Resumir"):
@@ -391,22 +392,22 @@ with st.expander("Resumen por Voz"):
 
 with st.expander("Generación de Gráficos"):
     if st.button("Generar Gráfico de Frecuencia"):
-        if texto:
-            generar_grafico_frecuencia(texto)
+        if st.session_state.get('texto'):
+            generar_grafico_frecuencia(st.session_state.get('texto'))
     if st.button("Generar Nube de Palabras"):
-        if texto:
-            generar_nube_palabras(texto, idioma_archivo)
+        if st.session_state.get('texto'):
+            generar_nube_palabras(st.session_state.get('texto'), idioma_archivo)
     if st.button("Generar Grafico de Barras"):
-        if texto:
-            generar_grafico_barras(texto, num_palabras=10)
+        if st.session_state.get('texto'):
+            generar_grafico_barras(st.session_state.get('texto'), num_palabras=10)
     if st.button("Generar Nube de Palabras Positivas"):
-        if texto:
-            generar_nube_palabras_sentimiento(texto, palabras_positivas, "Palabras Positivas", idioma_archivo)
+        if st.session_state.get('texto'):
+            generar_nube_palabras_sentimiento(st.session_state.get('texto'), palabras_positivas, "Palabras Positivas", idioma_archivo)
     if st.button("Generar Nube de Palabras Negativas"):
-        if texto:
-            generar_nube_palabras_sentimiento(texto, palabras_negativas, "Palabras Negativas", idioma_archivo)
+        if st.session_state.get('texto'):
+            generar_nube_palabras_sentimiento(st.session_state.get('texto'), palabras_negativas, "Palabras Negativas", idioma_archivo)
     if st.button("Generar Gráfico de Entidades"):
-        if texto:
-            generar_grafico_entidades(texto)
+        if st.session_state.get('texto'):
+            generar_grafico_entidades(st.session_state.get('texto'))
 
 st.help("Carga un archivo o ingresa una URL para buscar y resumir información.")

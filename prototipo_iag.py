@@ -164,11 +164,16 @@ def contar_frecuencia_palabras(texto, consulta):
 
 # Funciones de Resumen de Texto (Básicas)
 def resumir_texto(texto, num_oraciones=3):
-    oraciones = sent_tokenize(texto)
-    tokens = preprocesar_texto(texto)
-    frecuencia_palabras = nltk.FreqDist(tokens)
-    oraciones_importantes = sorted(oraciones, key=lambda oracion: sum(frecuencia_palabras[token] for token in word_tokenize(oracion.lower()) if token.isalnum()), reverse=True)
-    return ' '.join(oraciones_importantes[:num_oraciones])
+    try:
+        oraciones = sent_tokenize(texto, language='spanish') #Se agrega el language
+        tokens = preprocesar_texto(texto)
+        frecuencia_palabras = nltk.FreqDist(tokens)
+        oraciones_importantes = sorted(oraciones, key=lambda oracion: sum(frecuencia_palabras[token] for token in word_tokenize(oracion.lower()) if token.isalnum()), reverse=True)
+        return ' '.join(oraciones_importantes[:num_oraciones])
+    except Exception as e:
+        print(f"Error en resumir_texto: {e}")
+        return "Error al resumir el texto."
+
 
 # Resúmenes de Múltiples Fuentes con Citas
 def resumir_multiples_fuentes(fuentes, num_oraciones=3):

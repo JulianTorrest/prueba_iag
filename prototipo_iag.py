@@ -138,12 +138,6 @@ def preprocesar_texto(texto):
         print(f"Error en preprocesar_texto: {e}")
         return []
 
-def reconocer_entidades(texto):
-    doc = nlp(texto)
-    entidades = [(ent.text, ent.label_) for ent in doc.ents]
-    return entidades
-
-
 def analizar_sentimientos(texto):
     analizador = SentimentIntensityAnalyzer()
     puntuaciones = analizador.polarity_scores(texto)
@@ -429,8 +423,5 @@ with st.expander("Generación de Gráficos"):
     if st.button("Generar Nube de Palabras Negativas"):
         if st.session_state.get('texto'):
             generar_nube_palabras_sentimiento(st.session_state.get('texto'), palabras_negativas, "Palabras Negativas", idioma_archivo)
-    if st.button("Generar Gráfico de Entidades"):
-        if st.session_state.get('texto'):
-            generar_grafico_entidades(st.session_state.get('texto'))
 
 #st.help("Carga un archivo o ingresa una URL para buscar y resumir información.")

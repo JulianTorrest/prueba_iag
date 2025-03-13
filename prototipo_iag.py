@@ -48,20 +48,19 @@ except LookupError:
     print("Recurso Punkt_tab para español descargado.")
 
 # Funciones de Lectura de Archivos
-def leer_pdf(ruta_archivo):
+def leer_pdf(archivo):  # Modifica para aceptar UploadedFile
     try:
-        with open(ruta_archivo, 'rb') as archivo_pdf:
-            lector_pdf = PyPDF2.PdfReader(archivo_pdf)
-            texto = ""
-            for pagina in lector_pdf.pages:
-                texto += pagina.extract_text()
+        lector_pdf = PyPDF2.PdfReader(archivo)  # Usa el objeto UploadedFile directamente
+        texto = ""
+        for pagina in lector_pdf.pages:
+            texto += pagina.extract_text()
         return texto
     except Exception as e:
         return f"Error al leer PDF: {e}"
-
-def leer_word(ruta_archivo):
+        
+def leer_word(archivo):
     try:
-        documento = Document(ruta_archivo)
+        documento = Document(archivo)
         texto = ""
         for parrafo in documento.paragraphs:
             texto += parrafo.text + "\n"
@@ -69,9 +68,9 @@ def leer_word(ruta_archivo):
     except Exception as e:
         return f"Error al leer Word: {e}"
 
-def leer_csv(ruta_archivo):
+def leer_csv(archivo):
     try:
-        df = pd.read_csv(ruta_archivo)
+        df = pd.read_csv(archivo)
         texto = df.to_string()
         return texto
     except Exception as e:
@@ -97,9 +96,9 @@ def leer_web_idioma(url):
     except Exception as e:
         return f"Error al leer la página web: {e}", None
 
-def leer_imagen(ruta_archivo):
+def leer_imagen(archivo):
     try:
-        imagen = Image.open(ruta_archivo)
+        imagen = Image.open(archivo)
         texto = pytesseract.image_to_string(imagen, lang="spa")  # Cambia el idioma si es necesario
         return texto
     except Exception as e:

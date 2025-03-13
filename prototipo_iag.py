@@ -379,6 +379,31 @@ def texto_a_voz(texto, idioma="spanish"):
     st.audio(audio_bytes, format='audio/mp3')
     os.remove("resumen_voz.mp3")
 
+# Funciones de Búsqueda Mejoradas (Nuevas funciones de búsqueda)
+def buscar_coincidencia_exacta(texto, consulta):
+    try:
+        resultados = [linea for linea in texto.splitlines() if consulta.lower() in linea.lower()]
+        return resultados
+    except Exception as e:
+        print(f"Error en buscar_coincidencia_exacta: {e}")
+        return []
+
+def contar_frecuencia_exacta(texto, consulta):
+    try:
+        frecuencia = texto.lower().count(consulta.lower())
+        return frecuencia
+    except Exception as e:
+        print(f"Error en contar_frecuencia_exacta: {e}")
+        return 0
+
+def buscar_coincidencia_regex(texto, consulta):
+    try:
+        resultados = re.findall(consulta, texto, re.IGNORECASE)
+        return resultados
+    except Exception as e:
+        print(f"Error en buscar_coincidencia_regex: {e}")
+        return []
+        
 # Interfaz de Streamlit
 st.title("IA de Búsqueda de Documentos Avanzada")
 
@@ -417,20 +442,25 @@ with st.expander("Búsqueda y Resumen de Documentos"):
                 st.markdown("### Resumen:")
                 st.write(resumen)
 
-                if consulta:  # Verifica si hay una consulta
-                    coincidencias = buscar_coincidencia_parcial(st.session_state.get('texto'), consulta)
-                    frecuencia = contar_frecuencia_palabras(st.session_state.get('texto'), consulta)
+                if consulta:
+                    # Búsqueda directa
+                    coincidencias_exactas = buscar_coincidencia_exacta(st.session_state.get('texto'), consulta)
+                    frecuencia_exacta = contar_frecuencia_exacta(st.session_state.get('texto'), consulta)
+
+                    # Búsqueda con regex
+                    coincidencias_regex = buscar_coincidencia_regex(st.session_state.get('texto'), consulta)
 
                     st.markdown("### Resultados de la Búsqueda:")
-                    st.markdown("#### Coincidencias:")
-                    st.write(coincidencias)
-                    st.markdown("#### Frecuencia:")
-                    st.write(frecuencia)
+                    st.markdown("#### Coincidencias Exactas:")
+                    st.write(coincidencias_exactas)
+                    st.markdown("#### Frecuencia Exacta:")
+                    st.write(frecuencia_exacta)
+                    st.markdown("#### Coincidencias Regex:")
+                    st.write(coincidencias_regex)
                 else:
                     st.write("Ingresa una consulta para buscar.")
         else:
             st.write("No se ha proporcionado texto para buscar.")
-
 
 with st.expander("Resumen de Múltiples Fuentes"):
     fuentes_multiples = st.text_area("URLs o rutas de archivos (separadas por comas):")

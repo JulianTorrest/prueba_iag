@@ -12,6 +12,7 @@ from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import base64
+from nltk.corpus import stopwords
 import speech_recognition as sr
 from gtts import gTTS
 import os
@@ -46,6 +47,15 @@ except LookupError:
     print("Descargando recurso Punkt_tab para español...")
     nltk.download('punkt_tab')
     print("Recurso Punkt_tab para español descargado.")
+
+try:
+    stopwords.words('english')  # Intenta cargar stopwords para verificar la descarga
+    print("Corpus de stopwords descargado correctamente.")
+except LookupError:
+    print("Descargando corpus de stopwords...")
+    nltk.download('stopwords')
+    print("Corpus de stopwords descargado.")
+
 
 # Funciones de Lectura de Archivos
 def leer_pdf(archivo):  # Modifica para aceptar UploadedFile
@@ -248,16 +258,20 @@ def generar_grafico_frecuencia(texto):
     frecuencia.plot(20)
     st.pyplot(plt)
 
-def generar_nube_palabras(texto, idioma="es"):  # Agregamos el parámetro idioma
-    tokens = preprocesar_texto(texto)
-    stop_words = set(stopwords.words(idioma))  # Usamos el idioma especificado
-    tokens_filtrados = [token for token in tokens if token not in stop_words]
-    texto_limpio = " ".join(tokens_filtrados)
-    if texto_limpio:
-        wordcloud = WordCloud().generate(texto_limpio)
+def generar_nube_palabras(texto, idioma):
+    try:
+        print(f"Idioma seleccionado: {idioma}")  # Imprime el idioma
+        stop_words = set(stopwords.words(idioma))
+        tokens = word_tokenize(texto.lower())
+        tokens = [token for token in tokens if token.isalpha() and token not in stop_words]
+        texto_limpio = ' '.join(tokens)
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_limpio)
+        plt.figure(figsize=(10, 5))
         plt.imshow(wordcloud, interpolation='bilinear')
-        plt.axis("off")
+        plt.axis('off')
         st.pyplot(plt)
+    except Exception as e:
+        st.error(f"Error al generar la nube de palabras: {e}")
 
 def generar_grafico_barras(texto, num_palabras=10):
     tokens = preprocesar_texto(texto)

@@ -133,12 +133,9 @@ def preprocesar_texto(texto, idioma="spanish"):
         list: Lista de tokens preprocesados.
     """
     try:
-        # Tokenización y conversión a minúsculas
         tokens = word_tokenize(texto.lower(), language=idioma)
-        # Lematización
         lemmatizer = WordNetLemmatizer()
         tokens = [lemmatizer.lemmatize(token) for token in tokens if token.isalnum()]
-        # Eliminación de stopwords
         stop_words = set(stopwords.words(idioma))
         tokens = [token for token in tokens if token not in stop_words]
         return tokens
@@ -146,6 +143,48 @@ def preprocesar_texto(texto, idioma="spanish"):
         print(f"Error en preprocesar_texto: {e}")
         return []
 
+def buscar_coincidencia_parcial(texto, consulta, idioma="spanish"):
+    """
+    Busca coincidencias parciales de palabras entre un texto y una consulta.
+    Args:
+        texto (str): El texto donde buscar.
+        consulta (str): La consulta a buscar.
+        idioma (str, optional): Idioma para el preprocesamiento. Defaults to "spanish".
+    Returns:
+        list: Lista de palabras del texto que coinciden parcialmente con la consulta.
+    """
+    try:
+        tokens_texto = preprocesar_texto(texto, idioma)
+        tokens_consulta = preprocesar_texto(consulta, idioma)
+        # Usar conjuntos para una búsqueda más eficiente
+        conjunto_consulta = set(tokens_consulta)
+        resultados = [token for token in tokens_texto if any(consulta_token in token for consulta_token in conjunto_consulta)]
+        return resultados
+    except Exception as e:
+        print(f"Error en buscar_coincidencia_parcial: {e}")
+        return []
+
+def contar_frecuencia_palabras(texto, consulta, idioma="spanish"):
+    """
+    Cuenta la frecuencia de palabras de la consulta en el texto.
+    Args:
+        texto (str): El texto donde contar.
+        consulta (str): La consulta a buscar.
+        idioma (str, optional): Idioma para el preprocesamiento. Defaults to "spanish".
+    Returns:
+        int: La frecuencia de palabras de la consulta en el texto.
+    """
+    try:
+        tokens_texto = preprocesar_texto(texto, idioma)
+        tokens_consulta = preprocesar_texto(consulta, idioma)
+        # Usar conjuntos para una búsqueda más eficiente
+        conjunto_consulta = set(tokens_consulta)
+        frecuencia = sum(1 for token in tokens_texto if token in conjunto_consulta)
+        return frecuencia
+    except Exception as e:
+        print(f"Error en contar_frecuencia_palabras: {e}")
+        return 0
+        
 def analizar_sentimientos(texto):
     analizador = SentimentIntensityAnalyzer()
     puntuaciones = analizador.polarity_scores(texto)
@@ -206,23 +245,6 @@ def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idiom
 
     except Exception as e:
         st.error(f"Error al generar la nube de palabras {titulo}: {e}")
-
-# Funciones de Búsqueda Mejoradas
-def buscar_coincidencia_parcial(texto, consulta):
-    tokens_texto = preprocesar_texto(texto)
-    tokens_consulta = preprocesar_texto(consulta)
-    print(f"Tokens del texto: {tokens_texto}")
-    print(f"Tokens de la consulta: {tokens_consulta}")
-    resultados = [token for token in tokens_texto if any(consulta_token in token for consulta_token in tokens_consulta)]
-    return resultados
-
-def contar_frecuencia_palabras(texto, consulta):
-    tokens_texto = preprocesar_texto(texto)
-    tokens_consulta = preprocesar_texto(consulta)
-    print(f"Tokens del texto: {tokens_texto}")
-    print(f"Tokens de la consulta: {tokens_consulta}")
-    frecuencia = sum(1 for token in tokens_texto if token in tokens_consulta)
-    return frecuencia
 
 # Funciones de Resumen de Texto (Básicas)
 def resumir_texto(texto, num_oraciones=3):

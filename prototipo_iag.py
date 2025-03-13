@@ -440,11 +440,5 @@ with st.expander("Generación de Gráficos"):
     if st.button("Generar Grafico de Barras"):
         if st.session_state.get('texto'):
             generar_grafico_barras(st.session_state.get('texto'), num_palabras=10)
-    if st.button("Generar Nube de Palabras Positivas"):
-        if st.session_state.get('texto'):
-            generar_nube_palabras_sentimiento(st.session_state.get('texto'), palabras_positivas, "Palabras Positivas", idioma_archivo)
-    if st.button("Generar Nube de Palabras Negativas"):
-        if st.session_state.get('texto'):
-            generar_nube_palabras_sentimiento(st.session_state.get('texto'), palabras_negativas, "Palabras Negativas", idioma_archivo)
 
 #st.help("Carga un archivo o ingresa una URL para buscar y resumir información.")

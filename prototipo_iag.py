@@ -183,6 +183,7 @@ def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idiom
 
         # Imprimir información de depuración
         print(f"Texto limpio para {titulo}: {texto_limpio}")
+        print(f"Palabras filtradas para {titulo}: {palabras_filtradas}") # Imprimir palabras filtradas
 
         # Generar la nube de palabras si hay palabras filtradas
         if texto_limpio:

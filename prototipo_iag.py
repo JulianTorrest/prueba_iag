@@ -247,18 +247,34 @@ def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idiom
         st.error(f"Error al generar la nube de palabras {titulo}: {e}")
 
 # Funciones de Resumen de Texto (Básicas)
-def resumir_texto(texto, num_oraciones=3):
+def resumir_texto(texto, limite_palabras=1000, idioma="spanish"):
+    """
+    Genera un resumen de un texto con un límite de palabras.
+    Args:
+        texto (str): El texto a resumir.
+        limite_palabras (int, optional): Número aproximado de palabras para el resumen. Defaults to 500.
+        idioma (str, optional): Idioma del texto. Defaults to "spanish".
+
+    Returns:
+        str: Resumen del texto.
+    """
     try:
-        oraciones = sent_tokenize(texto, language='spanish') #Se agrega el language
-        tokens = preprocesar_texto(texto)
-        frecuencia_palabras = nltk.FreqDist(tokens)
-        oraciones_importantes = sorted(oraciones, key=lambda oracion: sum(frecuencia_palabras[token] for token in word_tokenize(oracion.lower()) if token.isalnum()), reverse=True)
-        return ' '.join(oraciones_importantes[:num_oraciones])
+        parser = PlaintextParser.from_string(texto, Tokenizer(idioma))
+        stemmer = Stemmer(idioma)
+        summarizer = LsaSummarizer(stemmer)
+        summarizer.stop_words = get_stop_words(idioma)
+        sentences = summarizer(parser.document, sentences_count=10) # Ajusta sentences_count según la longitud del texto
+        resumen_completo = " ".join([str(sentence) for sentence in sentences])
+        palabras_resumen = resumen_completo.split()
+        if len(palabras_resumen) > limite_palabras:
+            resumen_final = " ".join(palabras_resumen[:limite_palabras])
+        else:
+            resumen_final = resumen_completo
+        return resumen_final
     except Exception as e:
         print(f"Error en resumir_texto: {e}")
-        return "Error al resumir el texto."
-
-
+        return "No se pudo generar el resumen."
+        
 # Resúmenes de Múltiples Fuentes con Citas
 def resumir_multiples_fuentes(texto_combinado, idioma_resumen="spanish", limite_palabras=500):
     if isinstance(texto_combinado, str): #verifica que la variable sea de tipo string

@@ -488,7 +488,7 @@ with st.expander("Resumen de Múltiples Fuentes"):
             st.write(resumen_multiple)
         else:
             st.write("Ingresa URLs o rutas de archivos.")
-
+            
 with st.expander("Consulta en Página Web"):
     url_consulta = st.text_input("URL para consulta específica:")
     if st.button("Consultar Página Web"):

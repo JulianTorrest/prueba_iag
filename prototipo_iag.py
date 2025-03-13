@@ -123,16 +123,24 @@ def extraer_transcripcion_youtube(url):
         return f"Error al extraer transcripción de YouTube: {e}"
 
 # Funciones de Preprocesamiento de Texto
-def preprocesar_texto(texto):
+def preprocesar_texto(texto, idioma="spanish"):
+    """
+    Preprocesa un texto realizando tokenización, lematización y eliminación de stopwords.
+    Args:
+        texto (str): El texto a preprocesar.
+        idioma (str, optional): Idioma de las stopwords. Defaults to "spanish".
+    Returns:
+        list: Lista de tokens preprocesados.
+    """
     try:
-        tokens = word_tokenize(texto.lower(), language='spanish')
-        print(f"Tokens después de word_tokenize: {tokens}")
+        # Tokenización y conversión a minúsculas
+        tokens = word_tokenize(texto.lower(), language=idioma)
+        # Lematización
         lemmatizer = WordNetLemmatizer()
         tokens = [lemmatizer.lemmatize(token) for token in tokens if token.isalnum()]
-        print(f"Tokens después de lematización: {tokens}")
-        stop_words = set(stopwords.words('spanish'))
+        # Eliminación de stopwords
+        stop_words = set(stopwords.words(idioma))
         tokens = [token for token in tokens if token not in stop_words]
-        print(f"Tokens después de stopwords: {tokens}")
         return tokens
     except Exception as e:
         print(f"Error en preprocesar_texto: {e}")
@@ -203,12 +211,16 @@ def generar_nube_palabras_sentimiento(texto, palabras_sentimiento, titulo, idiom
 def buscar_coincidencia_parcial(texto, consulta):
     tokens_texto = preprocesar_texto(texto)
     tokens_consulta = preprocesar_texto(consulta)
+    print(f"Tokens del texto: {tokens_texto}")
+    print(f"Tokens de la consulta: {tokens_consulta}")
     resultados = [token for token in tokens_texto if any(consulta_token in token for consulta_token in tokens_consulta)]
     return resultados
 
 def contar_frecuencia_palabras(texto, consulta):
     tokens_texto = preprocesar_texto(texto)
     tokens_consulta = preprocesar_texto(consulta)
+    print(f"Tokens del texto: {tokens_texto}")
+    print(f"Tokens de la consulta: {tokens_consulta}")
     frecuencia = sum(1 for token in tokens_texto if token in tokens_consulta)
     return frecuencia
 

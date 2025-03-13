@@ -434,4 +434,4 @@ with st.expander("Generación de Gráficos"):
         if st.session_state.get('texto'):
             generar_grafico_entidades(st.session_state.get('texto'))
 
-st.help("Carga un archivo o ingresa una URL para buscar y resumir información.")
+#st.help("Carga un archivo o ingresa una URL para buscar y resumir información.")

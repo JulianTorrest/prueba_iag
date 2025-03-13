@@ -260,28 +260,44 @@ def resumir_texto(texto, num_oraciones=3):
 
 
 # Resúmenes de Múltiples Fuentes con Citas
-def resumir_multiples_fuentes(fuentes, num_oraciones=3):
-    resumenes = []
-    citas = []
+def resumir_multiples_fuentes(fuentes, idioma_resumen="spanish", limite_palabras=500):
+    """
+    Genera un resumen de aproximadamente 500 palabras de múltiples fuentes (archivos y URLs).
+    Args:
+        fuentes (str): URLs o rutas de archivos separadas por comas.
+        idioma_resumen (str, optional): Idioma del resumen. Defaults to "spanish".
+        limite_palabras (int, optional): Número aproximado de palabras para el resumen. Defaults to 500.
+    Returns:
+        str: Resumen combinado de las fuentes.
+    """
+    textos_combinados = ""
+    fuentes = [f.strip() for f in fuentes.split(",")]  # Separar y limpiar las fuentes
     for fuente in fuentes:
-        texto = ""
-        if fuente.endswith(".pdf"):
-            texto = leer_pdf(fuente)
-        elif fuente.endswith(".docx"):
-            texto = leer_word(fuente)
-        elif fuente.endswith(".csv"):
-            texto = leer_csv(fuente)
-        elif fuente.startswith("http://") or fuente.startswith("https://"):
-            texto = leer_web(fuente)
-        elif fuente.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-          texto = leer_imagen(fuente)
-        if texto:
-            resumen = resumir_texto(texto, num_oraciones)
-            resumenes.append(resumen)
-            citas.append(f"Resumen de: {fuente}")
-    return "\n".join(resumenes), "\n".join(citas)
-
-
+        try:
+            if fuente.startswith("http://") or fuente.startswith("https://"):
+                if "youtube.com" in fuente or "youtu.be" in fuente:
+                    texto_fuente = extraer_transcripcion_youtube(fuente)
+                else:
+                    texto_fuente = leer_web(fuente)
+            elif fuente.endswith(".pdf"):
+                texto_fuente = leer_pdf(fuente)
+            elif fuente.endswith(".docx"):
+                texto_fuente = leer_word(fuente)
+            elif fuente.endswith(".csv"):
+                texto_fuente = leer_csv(fuente)
+            else:
+                st.warning(f"Formato no compatible o URL inválida: {fuente}")
+                continue
+            if texto_fuente:
+                textos_combinados += texto_fuente + "\n\n"
+        except Exception as e:
+            st.error(f"Error al procesar {fuente}: {e}")
+    if textos_combinados:
+        resumen = resumir_texto(textos_combinados, idioma=idioma_resumen, limite_palabras=limite_palabras)
+        return resumen
+    else:
+        return "No se pudo extraer texto de las fuentes proporcionadas."
+        
 # Consultas en Páginas Web Específicas
 def consultar_pagina_web(url, consulta):
     try:

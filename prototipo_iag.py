@@ -56,7 +56,16 @@ except LookupError:
     nltk.download('stopwords')
     print("Corpus de stopwords descargado.")
 
-
+# Cargar el modelo de spaCy
+try:
+    nlp = spacy.load("es_core_news_sm") #Carga el modelo pequeño en español.
+    print("Modelo de spaCy cargado correctamente.")
+except OSError:
+    print("Descargando modelo de spaCy...")
+    spacy.cli.download("es_core_news_sm")
+    nlp = spacy.load("es_core_news_sm")
+    print("Modelo de spaCy cargado.")
+    
 # Funciones de Lectura de Archivos
 def leer_pdf(archivo):  # Modifica para aceptar UploadedFile
     try:

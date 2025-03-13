@@ -108,14 +108,17 @@ def extraer_transcripcion_youtube(url):
         return f"Error al extraer transcripción de YouTube: {e}"
 
 # Funciones de Preprocesamiento de Texto
-
 def preprocesar_texto(texto):
-    tokens = word_tokenize(texto.lower())
-    lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(token) for token in tokens if token.isalnum()]
-    stop_words = set(stopwords.words('spanish'))  # Cambia a 'english' si es necesario
-    tokens = [token for token in tokens if token not in stop_words]
-    return tokens
+    try:
+        tokens = word_tokenize(texto.lower(), language='spanish')  # Agrega language='spanish'
+        lemmatizer = WordNetLemmatizer()
+        tokens = [lemmatizer.lemmatize(token) for token in tokens if token.isalnum()]
+        stop_words = set(stopwords.words('spanish'))  # Cambia a 'english' si es necesario
+        tokens = [token for token in tokens if token not in stop_words]
+        return tokens
+    except Exception as e:
+        print(f"Error en preprocesar_texto: {e}")
+        return []
 
 def reconocer_entidades(texto):
     doc = nlp(texto)
